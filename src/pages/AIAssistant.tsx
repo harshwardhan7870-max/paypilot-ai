@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Bot, Send, Sparkles, UserRound } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { Card } from "../components/ui/Card";
 import {
   ApiRequestError,
@@ -130,7 +131,13 @@ export function AIAssistant() {
               <span className="chat-message-avatar" aria-hidden="true">
                 {message.role === "assistant" ? <Bot size={16} /> : <UserRound size={16} />}
               </span>
-              <p>{message.content}</p>
+              {message.role === "assistant" ? (
+                <div className="chat-message-content">
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                </div>
+              ) : (
+                <p>{message.content}</p>
+              )}
             </div>
           ))}
           {isSending && (

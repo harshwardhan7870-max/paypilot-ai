@@ -12,6 +12,8 @@ import {
   type PayPalConfig,
 } from "../services/api";
 
+const ORDER_REFRESH_EVENT = "paypilot:orders-refresh";
+
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
 export function Payments() {
@@ -106,6 +108,7 @@ export function Payments() {
                       setCheckoutError(`PayPal returned capture status ${result.status}; a completed capture was not confirmed.`);
                     } else {
                       setCheckoutError(null);
+                      window.dispatchEvent(new CustomEvent(ORDER_REFRESH_EVENT));
                     }
                   } catch (error) {
                     setCheckoutError(error instanceof Error ? error.message : "PayPal sandbox capture failed.");

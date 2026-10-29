@@ -2,6 +2,8 @@ import { useCallback, useEffect, useReducer } from "react";
 import type { Order } from "../types/order";
 import { getOrders } from "../services/api";
 
+const ORDER_REFRESH_EVENT = "paypilot:orders-refresh";
+
 // ---------------------------------------------------------------------------
 // State machine
 // ---------------------------------------------------------------------------
@@ -70,9 +72,16 @@ export function useOrders(): UseOrdersResult {
     }
   }, []);
 
-  // Fetch once on mount.
   useEffect(() => {
     void fetchOrders();
+    const refreshListener = () => {
+      void fetchOrders();
+    };
+
+    window.addEventListener(ORDER_REFRESH_EVENT, refreshListener);
+    return () => {
+      window.removeEventListener(ORDER_REFRESH_EVENT, refreshListener);
+    };
   }, [fetchOrders]);
 
   return {

@@ -7,14 +7,13 @@ export const ordersRouter = Router();
 /**
  * GET /api/orders
  *
- * Returns the demo order list. All records are sample data — no real orders
- * or financial data are included. Replace `demoOrders` with a real database
- * query when persistence is added in a future stage.
+ * Returns the shared in-memory order list. Demo orders and PayPal sandbox
+ * captures are stored together so the UI refreshes with the latest data.
  */
 ordersRouter.get("/", (_request, response) => {
   const body: OrdersResponse = {
     source: "demo",
-    note: "Sample data — not real orders.",
+    note: "Demo and sandbox order data.",
     orders: demoOrders,
   };
   response.json(body);

@@ -8,4 +8,5 @@ export interface Order {
   amount: number;
   status: OrderStatus;
   item: string;
+  source?: "demo" | "paypal-sandbox";
 }

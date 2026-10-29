@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { addOrderIfMissing } from "../data/demoOrders.js";
 import {
   capturePayPalOrder,
   createPayPalOrder,
@@ -28,7 +29,21 @@ paypalRouter.post("/capture", async (request, response, next) => {
   }
 
   try {
-    response.json(await capturePayPalOrder(orderId));
+    const capture = await capturePayPalOrder(orderId);
+    const captureAmount = Number(capture.amount ?? 0);
+    if (capture.status === "COMPLETED" && capture.captureId && Number.isFinite(captureAmount)) {
+      addOrderIfMissing({
+        id: capture.captureId,
+        customer: "PayPal Sandbox Buyer",
+        email: "",
+        date: new Date().toISOString().slice(0, 10),
+        amount: captureAmount,
+        status: "Paid",
+        item: "PayPilot Demo Purchase",
+        source: "paypal-sandbox",
+      });
+    }
+    response.json(capture);
   } catch (error) {
     if (error instanceof PayPalServiceError && error.statusCode === 400) {
       response.status(error.statusCode).json({ error: error.message });

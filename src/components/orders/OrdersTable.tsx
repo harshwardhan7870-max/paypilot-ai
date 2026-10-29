@@ -21,7 +21,16 @@ export function OrdersTable({ orders }: OrdersTableProps) {
               <td><strong>{order.customer}</strong><span className="table-subtitle">{order.email}</span></td>
               <td>{new Date(`${order.date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
               <td>{currency.format(order.amount)}</td>
-              <td><OrderStatusBadge status={order.status} /></td>
+              <td>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                  <OrderStatusBadge status={order.status} />
+                  {order.source === "paypal-sandbox" && (
+                    <span className="demo-pill" style={{ padding: "4px 8px", fontSize: "10px", whiteSpace: "nowrap" }}>
+                      PayPal sandbox
+                    </span>
+                  )}
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>
